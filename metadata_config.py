@@ -5,7 +5,7 @@ DOCUMENT_METADATA = {
     "dyson.md": {
         "source_type": "podcast",
         "podcast_name": "Founders",
-        "episode_number": 400,
+        "episode_name": "The Stubborn Genius of James Dyson",
         "subject": "James Dyson",
         "company": "Dyson",
         "industry": "manufacturing",
@@ -31,7 +31,7 @@ DOCUMENT_METADATA = {
     "stevejobs.md": {
         "source_type": "podcast",
         "podcast_name": "Founders",
-        "episode_number": None,  # Add if you know it
+        "episode_name": "Rare Steve Jobs's Rare Interview",
         "subject": "Steve Jobs",
         "company": "Apple",
         "industry": "technology",
@@ -57,7 +57,7 @@ DOCUMENT_METADATA = {
     "jensenhuang.md": {
         "source_type": "podcast",
         "podcast_name": "Founders",
-        "episode_number": None,
+        "episode_name": "Jensen Huang",
         "subject": "Jensen Huang",
         "company": "NVIDIA",
         "industry": "technology/semiconductors",
@@ -80,7 +80,7 @@ DOCUMENT_METADATA = {
     "elon.md": {
         "source_type": "podcast",
         "podcast_name": "Founders",
-        "episode_number": None,
+        "episode_name": "How Musk Works",
         "subject": "Elon Musk",
         "company": "Tesla/SpaceX",
         "industry": "technology/automotive/aerospace",
@@ -104,7 +104,7 @@ DOCUMENT_METADATA = {
     "elon2.md": {
         "source_type": "podcast",
         "podcast_name": "Founders",
-        "episode_number": None,
+        "episode_name": "Elon Musk and The Early Days of SpaceX",
         "subject": "Elon Musk",
         "company": "SpaceX",
         "industry": "aerospace",
@@ -129,7 +129,7 @@ DOCUMENT_METADATA = {
     "billgates.md": {
         "source_type": "podcast",
         "podcast_name": "Founders",
-        "episode_number": None,
+        "episode_name": "The Hardcore Work Ethic of Bill Gates",
         "subject": "Bill Gates",
         "company": "Microsoft",
         "industry": "technology/software",
@@ -149,4 +149,3 @@ DOCUMENT_METADATA = {
         "stage": "early_to_mature"
     }
 }
-

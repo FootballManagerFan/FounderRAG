@@ -27,24 +27,27 @@ DEFAULT_THRESHOLD = 0.4  # Lowered to cast wider net
 
 # Improved prompt template that encourages synthesis and pattern recognition
 PROMPT_TEMPLATE = """
-You are analyzing entrepreneur biographies and podcast transcripts. Use the following context to answer the question.
+You are analyzing entrepreneur biographies and podcast transcripts. Answer the question using ONLY the context provided below.
 
-Context (from {num_sources} sources):
+Context from {num_sources} source(s):
 {context}
-
-CRITICAL INSTRUCTIONS:
-1. ONLY use information that is explicitly stated in the context above
-2. DO NOT make up or infer information about entrepreneurs not mentioned in the context
-3. For EVERY claim or insight, cite the specific source by writing [Source: Entrepreneur Name]
-4. When the context has paragraph breaks (blank lines), treat each section as a distinct idea
-5. If multiple entrepreneurs are mentioned, compare and contrast their approaches
-6. If only one entrepreneur appears in the context, state that clearly and don't fabricate comparisons
-7. Provide specific examples and quotes from the context
-8. If you cannot answer based solely on the provided context, say "The provided context does not contain information about this"
 
 Question: {question}
 
-Please provide a comprehensive answer that draws from all relevant parts of the context, citing sources for each point.
+CRITICAL INSTRUCTIONS:
+- Use only information explicitly stated in the context
+- Synthesize insights across multiple sources when present
+- Compare and contrast different approaches between entrepreneurs
+- Provide specific examples and quotes
+- If the context lacks information to answer fully, acknowledge what's missing
+
+⚠️ CRITICAL: DO NOT ADD ANY SOURCE REFERENCES, CITATIONS, OR SOURCES SECTIONS IN YOUR ANSWER. 
+- Do not write [Source: Name] or any similar citations
+- Do not include a "Sources:" section or list
+- Do not mention sources at all in your response
+- Sources are provided separately below your response
+
+Answer:
 """
 
 
@@ -59,7 +62,7 @@ def main():
     args = parser.parse_args()
     
     # Process the query
-    response = query_database(
+    response, sources = query_database(
         args.query_text,
         k=args.k,
         threshold=args.threshold,
@@ -151,19 +154,20 @@ def query_database(query_text: str, k: int = DEFAULT_K, threshold: float = DEFAU
             # It's already a string (comma-separated from our metadata conversion)
             themes_str = themes
         
-        context_entry = f"[Source: {subject}"
-        if themes_str:
-            context_entry += f" | Themes: {themes_str}"
-        context_entry += f"]\n{doc.page_content}\n"
+        # Simple context entry without inline source citations
+        context_entry = f"{doc.page_content}\n"
         
         context_parts.append(context_entry)
         
-        # Collect source info
+        # Collect source info WITH chunk content
         source_info = {
             "subject": subject,
             "company": doc.metadata.get("company", "Unknown"),
             "themes": themes_str,  # Use the string version
-            "score": score
+            "score": score,
+            "chunk_text": doc.page_content,  # ADD chunk content
+            "chunk_index": doc.metadata.get("chunk_index", "?"),
+            "source_file": doc.metadata.get("source", "Unknown")
         }
         sources_info.append(source_info)
     
@@ -181,18 +185,10 @@ def query_database(query_text: str, k: int = DEFAULT_K, threshold: float = DEFAU
     model = ChatOpenAI(temperature=0)
     response_text = model.predict(prompt)
     
-    # Format final response with sources
-    formatted_response = f"{response_text}\n\n"
-    formatted_response += "=" * 50 + "\n"
-    formatted_response += "SOURCES:\n"
+    # Format final response without sources (sources are handled by web UI)
+    formatted_response = response_text
     
-    for i, source in enumerate(sources_info, 1):
-        formatted_response += f"\n{i}. {source['subject']} ({source['company']})\n"
-        formatted_response += f"   Relevance: {source['score']:.3f}\n"
-        if source['themes']:
-            formatted_response += f"   Themes: {source['themes']}\n"  # themes is already a string
-    
-    return formatted_response
+    return formatted_response, sources_info
 
 
 if __name__ == "__main__":

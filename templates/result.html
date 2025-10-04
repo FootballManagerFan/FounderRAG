@@ -30,6 +30,31 @@
             </div>
         </div>
 
+        {% if sources %}
+        <div class="sources">
+            <h3>📚 Sources</h3>
+            {% for source in sources %}
+            <div class="source-item">
+                <div class="source-header">
+                    <strong>{{ loop.index }}. {{ source.subject }} ({{ source.company }})</strong>
+                    <button onclick="toggleChunk({{ loop.index }})" class="expand-btn">
+                        Show Text
+                    </button>
+                </div>
+                <div class="source-meta">
+                    Relevance: {{ "%.3f"|format(source.score) }} | 
+                    Themes: {{ source.themes }} |
+                    File: {{ source.source_file }} |
+                    Chunk: {{ source.chunk_index }}
+                </div>
+                <div id="chunk-{{ loop.index }}" class="chunk-text" style="display:none">
+                    {{ source.chunk_text }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
         <div class="recent-queries">
             <h3>Recent Queries:</h3>
             {% for item in history %}
@@ -40,5 +65,19 @@
             {% endfor %}
         </div>
     </div>
+
+    <script>
+    function toggleChunk(id) {
+        const chunk = document.getElementById('chunk-' + id);
+        const btn = event.target;
+        if (chunk.style.display === 'none') {
+            chunk.style.display = 'block';
+            btn.textContent = 'Hide Text';
+        } else {
+            chunk.style.display = 'none';
+            btn.textContent = 'Show Text';
+        }
+    }
+    </script>
 </body>
 </html>

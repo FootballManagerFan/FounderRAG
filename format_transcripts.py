@@ -6,22 +6,29 @@ This script:
 2. Adds line breaks after sentences (periods followed by spaces)
 3. Preserves existing line breaks
 4. Saves the formatted version back to the file
+
+Usage:
+    python format_transcripts.py              # Format all transcripts
+    python format_transcripts.py --check      # Check which files need formatting
+    python format_transcripts.py --dry-run    # Show what would be changed without saving
 """
 
 import os
 import re
+import argparse
 from pathlib import Path
 
 
-def format_transcript(file_path: str) -> bool:
+def format_transcript(file_path: str, dry_run: bool = False) -> bool:
     """
     Format a transcript file by adding line breaks after sentences.
     
     Args:
         file_path: Path to the markdown file
+        dry_run: If True, don't actually modify the file
         
     Returns:
-        True if file was modified, False otherwise
+        True if file was modified or would be modified, False otherwise
     """
     try:
         # Read the file
@@ -50,11 +57,13 @@ def format_transcript(file_path: str) -> bool:
         
         # Write back if changed
         if content != original_content:
-            with open(file_path, 'w', encoding='utf-8') as f:
-                f.write(content)
+            if not dry_run:
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    f.write(content)
             
             new_line_count = content.count('\n')
-            print(f"  [DONE] Formatted {os.path.basename(file_path)}: {line_count} -> {new_line_count} lines")
+            action = "[DRY-RUN]" if dry_run else "[DONE]"
+            print(f"  {action} Formatted {os.path.basename(file_path)}: {line_count} -> {new_line_count} lines")
             return True
         else:
             print(f"  [SKIP] No changes needed for {os.path.basename(file_path)}")
@@ -65,10 +74,11 @@ def format_transcript(file_path: str) -> bool:
         return False
 
 
-def format_all_transcripts(directory: str = "transcripts"):
+def format_all_transcripts(directory: str = "transcripts", dry_run: bool = False):
     """Format all markdown files in the transcripts directory."""
     
-    print(f"Formatting transcripts in '{directory}' folder...")
+    action = "Checking" if dry_run else "Formatting"
+    print(f"{action} transcripts in '{directory}' folder...")
     print("=" * 60)
     
     # Find all .md files
@@ -82,14 +92,32 @@ def format_all_transcripts(directory: str = "transcripts"):
     
     formatted_count = 0
     for file_path in sorted(md_files):
-        if format_transcript(str(file_path)):
+        if format_transcript(str(file_path), dry_run):
             formatted_count += 1
     
     print("\n" + "=" * 60)
-    print(f"Complete! Formatted {formatted_count}/{len(md_files)} files")
-    print("\nYou can now run: python create_database.py")
+    if dry_run:
+        print(f"Check complete! {formatted_count}/{len(md_files)} files would be formatted")
+        print("Run without --dry-run to actually format the files")
+    else:
+        print(f"Complete! Formatted {formatted_count}/{len(md_files)} files")
+        if formatted_count > 0:
+            print("\nYou can now run: python create_database.py")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Format transcript files with proper line breaks")
+    parser.add_argument("--check", action="store_true", help="Check which files need formatting")
+    parser.add_argument("--dry-run", action="store_true", help="Show what would be changed without saving")
+    parser.add_argument("--directory", default="transcripts", help="Directory containing transcript files")
+    
+    args = parser.parse_args()
+    
+    # Check is same as dry-run
+    dry_run = args.check or args.dry_run
+    
+    format_all_transcripts(args.directory, dry_run)
 
 
 if __name__ == "__main__":
-    format_all_transcripts()
-
+    main()

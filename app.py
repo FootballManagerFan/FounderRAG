@@ -62,7 +62,7 @@ async def process_query(
 
     try:
         # Query the database using existing function
-        result = query_database(query, k=k, threshold=threshold, filter_str=filter_str)
+        result, sources = query_database(query, k=k, threshold=threshold, filter_str=filter_str)
 
         # Add to history
         query_history.append({
@@ -71,6 +71,7 @@ async def process_query(
             "threshold": threshold,
             "filter": filter_str,
             "result": result,
+            "sources": sources,
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         })
 
@@ -82,6 +83,7 @@ async def process_query(
             "request": request,
             "query": query,
             "result": result,
+            "sources": sources,
             "k": k,
             "threshold": threshold,
             "filter": filter_str,
