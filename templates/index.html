@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotivateAI Query Interface</title>
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 MotivateAI Query Interface</h1>
+            <p>Test and refine queries against your entrepreneur biography database</p>
+        </header>
+
+        <div class="query-form">
+            <form action="/query" method="post">
+                <div class="form-group">
+                    <label for="query">Query:</label>
+                    <textarea
+                        id="query"
+                        name="query"
+                        rows="4"
+                        placeholder="Enter your query about entrepreneurs, strategies, or concepts...
+
+Examples:
+• How do entrepreneurs approach rapid iteration?
+• Compare hiring strategies across founders
+• Examples of perseverance in entrepreneurship
+• Elon Musk's first principles thinking"
+                        required></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="k">Number of Results (k):</label>
+                        <input type="number" id="k" name="k" min="1" max="15" value="10">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="threshold">Similarity Threshold:</label>
+                        <input type="number" id="threshold" name="threshold" min="0.1" max="1.0" step="0.1" value="0.4">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="filter">Metadata Filter (optional):</label>
+                    <input type="text" id="filter" name="filter_str"
+                           placeholder="e.g., 'subject:Elon Musk' or 'themes:perseverance'">
+                </div>
+
+                <button type="submit" class="btn-primary">Query Database</button>
+            </form>
+        </div>
+
+        <div class="examples">
+            <h3>Example Query Patterns:</h3>
+            <div class="example-grid">
+                <button class="example-btn" onclick="fillExample('How do entrepreneurs approach rapid iteration and failure?')">Rapid Iteration</button>
+                <button class="example-btn" onclick="fillExample('Compare hiring strategies across different founders')">Hiring Strategies</button>
+                <button class="example-btn" onclick="fillExample('Examples of perseverance and persistence across entrepreneurs')">Perseverance</button>
+                <button class="example-btn" onclick="fillExample('First principles thinking examples')">First Principles</button>
+                <button class="example-btn" onclick="fillExample('Manufacturing and vertical integration approaches')">Manufacturing</button>
+                <button class="example-btn" onclick="fillExample('Product design philosophy across entrepreneurs')">Product Design</button>
+            </div>
+        </div>
+
+        <div class="recent-queries">
+            <h3>Recent Queries:</h3>
+            {% if history %}
+                {% for item in history %}
+                <div class="history-item">
+                    <strong>{{ item.query[:50] }}{% if item.query|length > 50 %}...{% endif %}</strong>
+                    <small>{{ item.timestamp }} | k={{ item.k }} | threshold={{ item.threshold }}</small>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No queries yet. Try one of the examples above!</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function fillExample(query) {
+            document.getElementById('query').value = query;
+        }
+    </script>
+</body>
+</html>

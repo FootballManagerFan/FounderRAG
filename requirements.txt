@@ -1,0 +1,29 @@
+# Core LangChain dependencies (pydantic v2 compatible)
+langchain>=0.1.20
+langchain-community>=0.0.20
+langchain-openai>=0.0.8
+
+# OpenAI API
+openai>=1.10.0
+
+# Vector store
+chromadb>=0.4.22
+
+# Environment variables
+python-dotenv>=1.0.0
+
+# Additional dependencies
+tiktoken>=0.5.2
+pydantic>=2.0.0  # Use v2 with updated LangChain
+numpy>=1.26.0
+
+# Web UI dependencies
+fastapi>=0.100.0
+uvicorn>=0.20.0
+jinja2>=3.1.0     # For HTML templates
+python-multipart>=0.0.6  # For form data handling
+
+# Document processing
+unstructured[md]>=0.10.0  # For loading markdown files
+
+sqlalchemy>=2.0.0

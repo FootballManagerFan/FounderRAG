@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query History - MotivateAI</title>
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Query History</h1>
+            <a href="/" class="btn-secondary">New Query</a>
+            <a href="/clear-history" class="btn-secondary" onclick="return confirm('Clear all history?')">Clear History</a>
+        </header>
+
+        {% if history %}
+            {% for item in history %}
+            <div class="history-item">
+                <div>
+                    <strong>{{ item.query }}</strong>
+                    <div class="params">
+                        Parameters: k={{ item.k }}, threshold={{ item.threshold }}
+                        {% if item.filter %}
+                        | Filter: {{ item.filter }}
+                        {% endif %}
+                    </div>
+                </div>
+                <small>{{ item.timestamp }}</small>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="results">
+                <p>No query history yet. <a href="/">Make your first query!</a></p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

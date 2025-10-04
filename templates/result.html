@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Query Results - MotivateAI</title>
+    <link href="/static/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔍 Query Results</h1>
+            <a href="/" class="btn-secondary">New Query</a>
+            <a href="/history" class="btn-secondary">View History</a>
+        </header>
+
+        <div class="query-info">
+            <h3>Query: {{ query }}</h3>
+            <div class="params">
+                <span>Parameters: k={{ k }}, threshold={{ threshold }}</span>
+                {% if filter %}
+                <span>Filter: {{ filter }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="results">
+            <div class="result-content">
+                {{ result | safe }}
+            </div>
+        </div>
+
+        <div class="recent-queries">
+            <h3>Recent Queries:</h3>
+            {% for item in history %}
+            <div class="history-item">
+                <strong>{{ item.query[:50] }}{% if item.query|length > 50 %}...{% endif %}</strong>
+                <small>{{ item.timestamp }}</small>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
